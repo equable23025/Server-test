@@ -45,7 +45,7 @@ app = JupyterDash(__name__, external_stylesheets=external_stylesheets)
 #app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
 # สร้างข้อมูล
-df = import_data('All areas', 'Small house', 'Jan', '2563')
+df = import_data('All areas', 'Large house', 'Jan', '2564')
 hr_df = align_trim_data(df)
 
 # create graph component
