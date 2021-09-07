@@ -127,7 +127,8 @@ def update_figure(month, daytype):
     fig = px.line(hr_df, x=hr_df.index, y=daytype)
 
     return fig
-
+  
+print("Start Server")
 http_tunnel = ngrok.connect(8400)
 print(http_tunnel)
 app.run_server(port=8400, mode='external', debug=True)
