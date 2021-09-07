@@ -64,7 +64,7 @@ def generate_table(df, rows):
 
 app.layout = html.Div(children=[
   html.H1(children='Hello Dash'),
-  html.Dropdown(
+  dcc.Dropdown(
     id='month',
     options=[
         {'label': 'ม.ค.', 'value': '01'},
@@ -75,7 +75,14 @@ app.layout = html.Div(children=[
     ],
     searchable=False
   ),
-  html.Dropdown(
+  dcc.Dropdown(
+    id='year',
+    options=[
+        {'label': '2564', 'value': '2564'},
+    ],
+    searchable=False
+  ),
+  dcc.Dropdown(
     id='status',
     options=[
         {'label': 'WORKDAY', 'value': 'WORKDAY'},
@@ -85,7 +92,7 @@ app.layout = html.Div(children=[
     value='WORKDAY'
   ),
 
-  html.Dropdown(
+  dcc.Dropdown(
     id='region',
     options=[
         {'label': 'All areas', 'value': 'All areas'},
@@ -93,7 +100,7 @@ app.layout = html.Div(children=[
     value='All areas'
   ),
 
-  html.Dropdown(
+  dcc.Dropdown(
     id='customer',
     options=[
         {'label': 'Large house', 'value': 'Large house'},
