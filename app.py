@@ -64,6 +64,43 @@ def generate_table(df, rows):
 
 app.layout = html.Div(children=[
   html.H1(children='Hello Dash'),
+  html.Dropdown(
+    id='month',
+    options=[
+        {'label': 'ม.ค.', 'value': '01'},
+        {'label': 'ก.พ.', 'value': '02'},
+        {'label': 'มี.ค.', 'value': '03'},
+        {'label': 'เม.ษ.', 'value': '04'},
+        {'label': 'พ.ค.', 'value': '05'},
+    ],
+    searchable=False
+  ),
+  html.Dropdown(
+    id='status',
+    options=[
+        {'label': 'WORKDAY', 'value': 'WORKDAY'},
+        {'label': 'SATURDAY', 'value': 'SATURDAY'},
+        {'label': 'SUNDAY', 'value': 'SUNDAY'}
+    ],
+    value='WORKDAY'
+  ),
+
+  html.Dropdown(
+    id='region',
+    options=[
+        {'label': 'All areas', 'value': 'All areas'},
+    ],
+    value='All areas'
+  ),
+
+  html.Dropdown(
+    id='customer',
+    options=[
+        {'label': 'Large house', 'value': 'Large house'},
+    ],
+    value='Large house'
+  ),
+
   html.Div(
       children='Demo line plot.',
       style={'textAlign': 'center', 'color': '#23A223'}
