@@ -1,7 +1,6 @@
-!pip install --quiet jupyter-dash pyngrok
+#!pip install --quiet jupyter-dash pyngrok
 
-
-#import dash
+#import dash 
 from jupyter_dash import JupyterDash
 import dash_core_components as dcc
 import dash_html_components as html
