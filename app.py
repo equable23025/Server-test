@@ -129,6 +129,6 @@ def update_figure(month, daytype):
     return fig
   
 print("Start Server")
-http_tunnel = ngrok.connect(8400)
+http_tunnel = ngrok.connect(80)
 print(http_tunnel)
-app.run_server(port=8400, mode='external', debug=True)
+app.run_server(port=80, mode='external', debug=True)
