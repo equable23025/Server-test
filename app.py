@@ -7,6 +7,8 @@ import dash_html_components as html
 import plotly.express as px
 from pyngrok import ngrok
 import pandas as pd
+import dash
+from dash.dependencies import Input, Output
 
 
 DATA_URL = 'http://peaoc.pea.co.th/loadprofile/files/%s/%s'
@@ -16,6 +18,7 @@ MONTHS = {'Jan':'01', 'Feb':'02', 'Mar':'03', 'Apr':'04', 'May':'05', 'Jun':'06'
 YEARS = {'2555':'12', '2556':'13', '2557':'14', '2558':'15', '2559':'16', '2560':'17', '2561':'18', '2562':'19', '2563':'20', '2564':'21'}
 
 
+# นำเข้าข้อมูลในรูปแบบ DataFrame
 def import_data(region, customer, month, year):
   fname = "dt%s%s%s%s.xls"%(REGIONS[region], YEARS[year], MONTHS[month], CUSTOMERS[customer])
   url = DATA_URL%(REGIONS[region], fname)
@@ -27,7 +30,7 @@ def import_data(region, customer, month, year):
     df = pd.read_excel(url, sheet_name='Sheet1', skiprows=2, usecols='A:E', names=col_names, nrows=97)
   return df 
 
-
+# จัดรูปแบบข้อมูลเป็นรายชั่วโมง
 def align_trim_data(orig_df):
   df = orig_df.copy()
   df.iloc[0:96, 1:] = df.iloc[1:97, 1:].values
@@ -36,7 +39,7 @@ def align_trim_data(orig_df):
   df.set_index(new_idx, inplace=True)
   hr_df = df.resample('1H').mean()
   hr_df['TIME'] = pd.date_range(start="00:00", end="23:00", freq='h')
-  return hr_df 
+  return hr_df
 
 # prepare Dash runtime
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
@@ -44,12 +47,11 @@ app = JupyterDash(__name__, external_stylesheets=external_stylesheets)
 #app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
 # สร้างข้อมูล
-df = import_data('All areas', 'Large house', 'Jan', '2564')
+df = import_data('All areas', 'Small house', 'Jan', '2563')
 hr_df = align_trim_data(df)
 
 # create graph component
 fig = px.line(hr_df, x=hr_df.index, y='WORKDAY')
-
 
 # create table
 def generate_table(df, rows):
@@ -64,48 +66,31 @@ def generate_table(df, rows):
 
 app.layout = html.Div(children=[
   html.H1(children='Hello Dash'),
-  dcc.Dropdown(
+
+dcc.Dropdown(
     id='month',
     options=[
-        {'label': 'ม.ค.', 'value': '01'},
-        {'label': 'ก.พ.', 'value': '02'},
-        {'label': 'มี.ค.', 'value': '03'},
-        {'label': 'เม.ษ.', 'value': '04'},
-        {'label': 'พ.ค.', 'value': '05'},
+        {'label': 'ม.ค.', 'value': 'Jan'},
+        {'label': 'ก.พ.', 'value': 'Feb'},
+        {'label': 'มี.ค.', 'value': 'Mar'},
+        {'label': 'เม.ษ.', 'value': 'Apr'},
+        {'label': 'พ.ค.', 'value': 'May'},
+
     ],
+    value='Jan',
+
     searchable=False
   ),
   dcc.Dropdown(
-    id='year',
-    options=[
-        {'label': '2564', 'value': '2564'},
-    ],
-    searchable=False
-  ),
-  dcc.Dropdown(
-    id='status',
+    id='daytype',
     options=[
         {'label': 'WORKDAY', 'value': 'WORKDAY'},
         {'label': 'SATURDAY', 'value': 'SATURDAY'},
         {'label': 'SUNDAY', 'value': 'SUNDAY'}
     ],
-    value='WORKDAY'
-  ),
+        value='WORKDAY',
 
-  dcc.Dropdown(
-    id='region',
-    options=[
-        {'label': 'All areas', 'value': 'All areas'},
-    ],
-    value='All areas'
-  ),
-
-  dcc.Dropdown(
-    id='customer',
-    options=[
-        {'label': 'Large house', 'value': 'Large house'},
-    ],
-    value='Large house'
+    searchable=False
   ),
 
   html.Div(
@@ -113,15 +98,35 @@ app.layout = html.Div(children=[
       style={'textAlign': 'center', 'color': '#23A223'}
   ),
   dcc.Graph(
-      id='example-graph',
+      id='graph',
       figure=fig
   ),
   html.Div(
       children='Demo table.',
       style={'textAlign': 'left', 'color': '#2323A2'}
   ),
+  html.Div(id='my-output'),
   generate_table(hr_df, 5)
 ])
+
+@app.callback(
+    Output('graph','figure'),
+
+    Input(component_id='month', component_property='value'),
+    Input(component_id='daytype', component_property='value')
+
+)
+def update_figure(month, daytype):
+    # ctx = dash.callback_context
+    # print(ctx)
+    print('hello')
+    df = import_data('All areas', 'Large house', month, '2564')
+    hr_df = align_trim_data(df)
+
+    # create graph component
+    fig = px.line(hr_df, x=hr_df.index, y=daytype)
+
+    return fig
 
 http_tunnel = ngrok.connect(5000)
 print(http_tunnel)
