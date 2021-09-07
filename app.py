@@ -129,7 +129,7 @@ def update_figure(month, daytype):
     return fig
   
 print("Start Server")
-
+print("Start Server2")
 if __name__ == '__main__':
   
   app.run_server(debug=True)
